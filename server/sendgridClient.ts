@@ -2,8 +2,21 @@ import sgMail from '@sendgrid/mail';
 
 let connectionSettings: any;
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 async function getCredentials() {
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
+  if (!hostname) {
+    throw new Error('REPLIT_CONNECTORS_HOSTNAME not set');
+  }
+
   const xReplitToken = process.env.REPL_IDENTITY
     ? 'repl ' + process.env.REPL_IDENTITY
     : process.env.WEB_REPL_RENEWAL
@@ -47,6 +60,10 @@ export async function sendConsentConfirmationEmail(
 ) {
   const { client, fromEmail } = await getUncachableSendGridClient();
 
+  const safeFirst = escapeHtml(firstName);
+  const safeLast = escapeHtml(lastName);
+  const safeSentinel = escapeHtml(sentinelNumber);
+
   const msg = {
     to: toEmail,
     from: {
@@ -58,12 +75,12 @@ export async function sendConsentConfirmationEmail(
       <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f9fb; padding: 32px 16px;">
         <div style="background: #ffffff; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); overflow: hidden;">
           <div style="background: #0284c7; padding: 32px; text-align: center;">
-            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Thank You, ${firstName}!</h1>
+            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Thank You, ${safeFirst}!</h1>
             <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 8px 0 0;">Your consent has been recorded</p>
           </div>
           <div style="padding: 32px;">
             <p style="color: #2c4a6e; font-size: 15px; line-height: 1.6; margin: 0 0 16px;">
-              Dear ${firstName} ${lastName},
+              Dear ${safeFirst} ${safeLast},
             </p>
             <p style="color: #2c4a6e; font-size: 15px; line-height: 1.6; margin: 0 0 16px;">
               We have successfully recorded your marketing consent. Here is a summary of what you agreed to:
@@ -72,11 +89,11 @@ export async function sendConsentConfirmationEmail(
               <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                   <td style="padding: 6px 0; color: #5a7a9e; font-size: 14px; width: 140px;">Name:</td>
-                  <td style="padding: 6px 0; color: #2c4a6e; font-size: 14px; font-weight: 600;">${firstName} ${lastName}</td>
+                  <td style="padding: 6px 0; color: #2c4a6e; font-size: 14px; font-weight: 600;">${safeFirst} ${safeLast}</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #5a7a9e; font-size: 14px;">Sentinel Number:</td>
-                  <td style="padding: 6px 0; color: #2c4a6e; font-size: 14px; font-weight: 600;">${sentinelNumber}</td>
+                  <td style="padding: 6px 0; color: #2c4a6e; font-size: 14px; font-weight: 600;">${safeSentinel}</td>
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; color: #5a7a9e; font-size: 14px;">Consent:</td>

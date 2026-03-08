@@ -60,16 +60,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('Failed to save to Google Sheets:', sheetsError);
       }
       
-      try {
-        await sendConsentConfirmationEmail(
-          submission.email,
-          submission.firstName,
-          submission.lastName,
-          submission.sentinelNumber
-        );
-      } catch (emailError) {
+      sendConsentConfirmationEmail(
+        submission.email,
+        submission.firstName,
+        submission.lastName,
+        submission.sentinelNumber
+      ).catch(emailError => {
         console.error('Failed to send confirmation email:', emailError);
-      }
+      });
       
       res.json({ 
         success: true, 
