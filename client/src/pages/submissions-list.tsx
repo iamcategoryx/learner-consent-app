@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Download } from "lucide-react";
 
 export default function SubmissionsList() {
   const { data, isLoading, error } = useQuery<{
@@ -45,11 +46,26 @@ export default function SubmissionsList() {
 
             {data && (
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
-                  <CheckCircle2 className="h-5 w-5" />
-                  <p className="font-medium">
-                    {data.count} submission{data.count !== 1 ? "s" : ""} found
-                  </p>
+                <div className="flex items-center justify-between flex-wrap gap-3">
+                  <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <p className="font-medium">
+                      {data.count} submission{data.count !== 1 ? "s" : ""} found
+                    </p>
+                  </div>
+                  {data.count > 0 && (
+                    <Button
+                      asChild
+                      variant="default"
+                      size="sm"
+                      data-testid="button-export-csv"
+                    >
+                      <a href="/api/consent/export" download>
+                        <Download className="h-4 w-4 mr-2" />
+                        Export to CSV
+                      </a>
+                    </Button>
+                  )}
                 </div>
 
                 {data.rows.length > 0 ? (

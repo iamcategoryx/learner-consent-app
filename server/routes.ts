@@ -123,6 +123,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/consent/export", async (req, res) => {
+    try {
+      const sheets = await getUncachableGoogleSheetClient();
+      const spreadsheetId = await getSpreadsheetId();
+      
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: 'A:G'
+      });
+      
+      const rows = response.data.values || [];
+      
+      const csvLines = rows.map(row =>
+        row.map(cell => {
+          const escaped = String(cell).replace(/"/g, '""');
+          return `"${escaped}"`;
+        }).join(',')
+      );
+      
+      const csv = csvLines.join('\r\n');
+      const today = new Date();
+      const filename = `consent_submissions_${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}.csv`;
+      
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.send(csv);
+    } catch (error: any) {
+      console.error('Failed to export CSV:', error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to export submissions"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
