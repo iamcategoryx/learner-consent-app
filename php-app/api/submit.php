@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/email.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -73,6 +74,21 @@ try {
     ]);
 
     $id = $db->lastInsertId();
+
+    if (SENDGRID_API_KEY !== '' && SENDGRID_FROM_EMAIL !== '') {
+        try {
+            sendConsentConfirmationEmail(
+                $email,
+                $firstName,
+                $lastName,
+                $sentinelNumber,
+                SENDGRID_API_KEY,
+                SENDGRID_FROM_EMAIL
+            );
+        } catch (Exception $emailErr) {
+            error_log('Failed to send confirmation email: ' . $emailErr->getMessage());
+        }
+    }
 
     echo json_encode([
         'success' => true,

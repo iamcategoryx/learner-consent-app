@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertConsentSubmissionSchema } from "@shared/schema";
 import { getUncachableGoogleSheetClient, getSpreadsheetId } from "./googleSheetClient";
+import { sendConsentConfirmationEmail } from "./sendgridClient";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Submit consent form
@@ -57,7 +58,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Consent submission saved to Google Sheets: ${spreadsheetId}`);
       } catch (sheetsError) {
         console.error('Failed to save to Google Sheets:', sheetsError);
-        // Continue even if Google Sheets fails, we have it in memory
+      }
+      
+      try {
+        await sendConsentConfirmationEmail(
+          submission.email,
+          submission.firstName,
+          submission.lastName,
+          submission.sentinelNumber
+        );
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
       }
       
       res.json({ 
