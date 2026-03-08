@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/email.php';
+require_once __DIR__ . '/../includes/googlesheet.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -74,6 +75,14 @@ try {
     ]);
 
     $id = $db->lastInsertId();
+
+    if (GOOGLE_SPREADSHEET_ID !== '') {
+        try {
+            appendToGoogleSheet($firstName, $lastName, $email, $mobile, $sentinelNumber, $consent);
+        } catch (Exception $sheetErr) {
+            error_log('Failed to save to Google Sheets: ' . $sheetErr->getMessage());
+        }
+    }
 
     if (SENDGRID_API_KEY !== '' && SENDGRID_FROM_EMAIL !== '') {
         try {

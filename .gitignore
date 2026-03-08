@@ -5,3 +5,4 @@ server/public
 vite.config.ts.*
 *.tar.gz
 .spreadsheet_id
+php-app/google-credentials.json

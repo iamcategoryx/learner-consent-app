@@ -7,6 +7,8 @@ A **PHP 8.3 + MySQL version** is also available in the `php-app/` folder for dep
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+All changes must be made in both the Node.js/React version AND the PHP 8.3 version (`php-app/`).
+All changes must be pushed to the GitHub repo (`https://github.com/iamcategoryx/learner-consent-app`) after each update.
 
 # System Architecture
 
@@ -62,7 +64,7 @@ A standalone PHP version lives in `php-app/` with the following structure:
 - `css/style.css` - All styling
 - `.htaccess` - Apache URL rewriting
 
-**Note**: The PHP version does NOT include Google Sheets integration. It uses MySQL exclusively for data storage. SendGrid credentials must be set manually in `includes/config.php`.
+**Note**: The PHP version uses MySQL for primary data storage. Google Sheets integration is available via a Google Service Account - place the `google-credentials.json` key file in the `php-app/` root and set `GOOGLE_SPREADSHEET_ID` in `includes/config.php`. SendGrid credentials must also be set manually in `includes/config.php`.
 
 ## Company Details
 
