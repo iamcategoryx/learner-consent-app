@@ -15,7 +15,7 @@ function getSendGridConfig() {
     throw new Error('SENDGRID_API_KEY_CONSENTCAPTURE environment variable is not set');
   }
 
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'info@absoluterail.co.uk';
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'bookings@absolutetraining.uk';
 
   return { apiKey, fromEmail };
 }

@@ -11,7 +11,7 @@ define('SITE_EMAIL', 'info@absoluterail.co.uk');
 define('SITE_YEAR', '2025');
 
 define('SENDGRID_API_KEY', '');
-define('SENDGRID_FROM_EMAIL', '');
+define('SENDGRID_FROM_EMAIL', 'bookings@absolutetraining.uk');
 
 define('GOOGLE_SERVICE_ACCOUNT_KEY_FILE', dirname(__FILE__) . '/../google-credentials.json');
 define('GOOGLE_SPREADSHEET_ID', '');
