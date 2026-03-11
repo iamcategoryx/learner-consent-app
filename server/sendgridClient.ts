@@ -1,7 +1,5 @@
 import sgMail from '@sendgrid/mail';
 
-let connectionSettings: any;
-
 function escapeHtml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -11,44 +9,23 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#39;');
 }
 
-async function getCredentials() {
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-  if (!hostname) {
-    throw new Error('REPLIT_CONNECTORS_HOSTNAME not set');
+function getSendGridConfig() {
+  const apiKey = process.env.SENDGRID_API_KEY_CONSENTCAPTURE;
+  if (!apiKey) {
+    throw new Error('SENDGRID_API_KEY_CONSENTCAPTURE environment variable is not set');
   }
 
-  const xReplitToken = process.env.REPL_IDENTITY
-    ? 'repl ' + process.env.REPL_IDENTITY
-    : process.env.WEB_REPL_RENEWAL
-    ? 'depl ' + process.env.WEB_REPL_RENEWAL
-    : null;
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'info@absoluterail.co.uk';
 
-  if (!xReplitToken) {
-    throw new Error('X-Replit-Token not found for repl/depl');
-  }
-
-  connectionSettings = await fetch(
-    'https://' + hostname + '/api/v2/connection?include_secrets=true&connector_names=sendgrid',
-    {
-      headers: {
-        'Accept': 'application/json',
-        'X-Replit-Token': xReplitToken
-      }
-    }
-  ).then(res => res.json()).then(data => data.items?.[0]);
-
-  if (!connectionSettings || (!connectionSettings.settings.api_key || !connectionSettings.settings.from_email)) {
-    throw new Error('SendGrid not connected');
-  }
-  return { apiKey: connectionSettings.settings.api_key, email: connectionSettings.settings.from_email };
+  return { apiKey, fromEmail };
 }
 
-export async function getUncachableSendGridClient() {
-  const { apiKey, email } = await getCredentials();
+export function getUncachableSendGridClient() {
+  const { apiKey, fromEmail } = getSendGridConfig();
   sgMail.setApiKey(apiKey);
   return {
     client: sgMail,
-    fromEmail: email
+    fromEmail
   };
 }
 
@@ -58,7 +35,7 @@ export async function sendConsentConfirmationEmail(
   lastName: string,
   sentinelNumber: string
 ) {
-  const { client, fromEmail } = await getUncachableSendGridClient();
+  const { client, fromEmail } = getUncachableSendGridClient();
 
   const safeFirst = escapeHtml(firstName);
   const safeLast = escapeHtml(lastName);
