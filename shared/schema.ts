@@ -34,7 +34,7 @@ export const insertConsentSubmissionSchema = createInsertSchema(consentSubmissio
   email: z.string().email("Please enter a valid email address"),
   mobile: z.string().regex(/^07\d{9}$/, "Please enter a valid UK mobile number (e.g., 07825633999)"),
   sentinelNumber: z.string().min(1, "Sentinel Number is required"),
-  consent: z.boolean().refine(val => val === true, "You must provide consent to continue"),
+  consent: z.boolean(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

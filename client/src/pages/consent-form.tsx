@@ -168,7 +168,7 @@ export default function ConsentForm() {
                 )}
               </div>
 
-              {/* Marketing Consent Checkbox */}
+              {/* Marketing Consent Checkbox (opt-in, not required) */}
               <div className="checkbox-group">
                 <div className="flex items-start space-x-3">
                   <Checkbox
@@ -183,12 +183,6 @@ export default function ConsentForm() {
                     I agree to receive SMS messages and emails from your organisation regarding course recertification reminders, training updates, and related marketing communications. I understand that I will be contacted approximately 2 years from now to book my recertification event. I can withdraw my consent at any time by contacting you directly.
                   </Label>
                 </div>
-                {form.formState.errors.consent && (
-                  <div className="error-message mt-2">
-                    <TriangleAlert className="w-4 h-4" />
-                    <span>{form.formState.errors.consent.message}</span>
-                  </div>
-                )}
               </div>
 
               {/* Privacy Notice */}

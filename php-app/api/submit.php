@@ -47,10 +47,6 @@ if ($sentinelNumber === '') {
     $errors[] = ['field' => 'sentinelNumber', 'message' => 'Sentinel Number is required'];
 }
 
-if (!$consent) {
-    $errors[] = ['field' => 'consent', 'message' => 'You must provide consent to continue'];
-}
-
 if (!empty($errors)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Validation failed', 'errors' => $errors]);

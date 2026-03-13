@@ -82,10 +82,6 @@
                                 I agree to receive SMS messages and emails from your organisation regarding course recertification reminders, training updates, and related marketing communications. I understand that I will be contacted approximately 2 years from now to book my recertification event. I can withdraw my consent at any time by contacting you directly.
                             </label>
                         </div>
-                        <div class="error-text" id="error-consent" style="display:none; margin-top:0.5rem">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                            <span></span>
-                        </div>
                     </div>
 
                     <div class="privacy-box">
@@ -164,7 +160,6 @@
             }
 
             if (!v.sentinelNumber.value.trim()) { showError('sentinelNumber', 'Sentinel Number is required'); ok = false; }
-            if (!v.consent.checked) { showError('consent', 'You must provide consent to continue'); ok = false; }
 
             return ok;
         }
